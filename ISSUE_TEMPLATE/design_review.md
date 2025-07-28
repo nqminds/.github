@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+
+🔗 See the [Design Review Guidelines](https://github.com/YOUR_ORG/.github/blob/main/ISSUE_TEMPLATE/../design_review_guidelines.md) for examples and review process details.
+
 ## Summary
 
 _What is being built? Why?_
