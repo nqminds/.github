@@ -12,7 +12,11 @@ assignees: ''
 
 ## Summary
 
-_What is being built? Why?_
+_What is being built? Why? Who are we building it for?_
+
+## Business Context
+
+_Any relations to other projects? Relations to platforms aspirations or other software?_
 
 ## Relationships
 
@@ -28,8 +32,8 @@ _Any new tools, libraries, or frameworks?_
 
 ## Technical Approach
 
-_Bullet points on how this will be built._
+_Bullet points on how this will be built. Tools, languages, data flow etc._
 
 ## Assumptions / Risks / Open Questions
 
-_What are the uncertainties or assumptions that may affect success?_
+_What are the uncertainties, upstream dependencies or assumptions that may affect success?_

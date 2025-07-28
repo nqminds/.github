@@ -64,6 +64,12 @@ Keep it **½–1 page**, bullet points are fine.
 
    * **What is being built?** (1–2 sentences)
    * **Why are we building it?** (high-level purpose / requirements)
+   * **Who are we building it for?** (who will be using this? Internal developers? Customer? Someone else?)
+
+2. **Business Context**
+
+   * Relation to other projects (will this thing be used / re-used in or with other projects?)
+   * Relation to platform aspirations / other company software (e.g. integrated with Volt to provide financial reporting)
 
 2. **Relationships**
 
@@ -87,7 +93,7 @@ Keep it **½–1 page**, bullet points are fine.
 
 6. **Assumptions, Risks & Open Questions**
 
-   * Uncertainties (e.g., performance, upstream dependencies, security).
+   * Uncertainties (e.g., performance, upstream dependencies [I need that feature to be working in that other codebase before I start], security).
    * Assumptions that could break the design.
 
 ---
