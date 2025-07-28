@@ -100,7 +100,8 @@ Author drafts the design doc (≤20 min).
 
 ### Step 2 – Share
 
-* **Initial:** via email or Slack message.
+* **Initial:** Create design review github issue in repository, tag reviewers & let them know via email, Slack, Watt message.
+* **Design Review Issue Creation** ![UI on github to create Design Review Issue](image.png)
 * **Final:** commit to repo (`/docs/design/`).
 
 ### Step 3 – Review
