@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 
-🔗 See the [Design Review Guidelines](https://github.com/YOUR_ORG/.github/blob/main/ISSUE_TEMPLATE/../design_review_guidelines.md) for examples and review process details.
+🔗 See the [Design Review Guidelines](https://github.com/nqminds/.github/blob/main/Docs/Design_review_guidlines.md) for examples and review process details.
 
 ## Summary
 
