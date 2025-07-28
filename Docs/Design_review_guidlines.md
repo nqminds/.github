@@ -68,7 +68,7 @@ Keep it **½–1 page**, bullet points are fine.
    * **Why are we building it?** (high-level purpose / requirements)
    * **Who are we building it for?** (who will be using this? Internal developers? Customer? Someone else?)
 
-2. **Business Context**
+2. **Business Context & Cross project relations**
 
    * Relation to other projects (will this thing be used / re-used in or with other projects?)
    * Relation to platform aspirations / other company software (e.g. integrated with Volt to provide financial reporting)
@@ -143,11 +143,13 @@ Author drafts the design doc (≤20 min).
 When reviewing, ask:
 
 1. **Purpose & Scope** – Is the problem well understood? Does the design fit the requirements?
-2. **Relationships** – Have cross-component impacts been considered?
-3. **Interfaces** – Are the interfaces clear, minimal, and aligned with existing conventions?
-4. **Dependencies** – Any unnecessary frameworks or tech bloat introduced?
-5. **Future Flexibility** – Does the design allow reasonable future changes without huge refactors?
-6. **Risks & Assumptions** – Are key uncertainties identified?
+2. **Business Context & Cross project relations** – Has business context and cross-project impacts been considered?
+3. **Requirements** - Have the requirements been specified?
+4. **Interfaces** – Are the interfaces clear, minimal, and aligned with existing conventions?
+5. **Dependencies** – Any unnecessary frameworks or tech bloat introduced?
+6. **Future Flexibility** – Does the design allow reasonable future changes without huge refactors?
+7. **Justification** - Have the design decisions taken been justified with good reasons? Have any considerations been missed that mean the design might not be appropriate or are there any considerations which mean that another technical approach may be superior?
+8. **Risks & Assumptions** – Are key uncertainties identified?
 
 ---
 

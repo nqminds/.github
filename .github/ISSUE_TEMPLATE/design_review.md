@@ -16,7 +16,7 @@ assignees: ''
 
 _What is being built? Why? Who are we building it for?_
 
-## Business Context
+## Business Context & Cross project relations?
 
 _Any relations to other projects? Relations to platforms aspirations or other software?_
 
