@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links: []
+issue_templates:
+  - name: Design Review
+    description: Propose a new component, service, or architectural change.
+    title: "[Design Review] "
+    labels: ["design-review"]
+    file: design_review.md
