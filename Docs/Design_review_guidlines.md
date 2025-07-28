@@ -60,6 +60,8 @@ Keep it **½–1 page**, bullet points are fine.
 
 ### Template
 
+#### Problem Statement
+
 1. **Title & Summary**
 
    * **What is being built?** (1–2 sentences)
@@ -71,27 +73,37 @@ Keep it **½–1 page**, bullet points are fine.
    * Relation to other projects (will this thing be used / re-used in or with other projects?)
    * Relation to platform aspirations / other company software (e.g. integrated with Volt to provide financial reporting)
 
-2. **Relationships**
+3. **Requirements**
 
-   * How does it relate to other components?
-   * Cardinality (1:1, 1\:N, N:1, N\:M)?
+   * performance (e.g. aiming for 80 percent accuracy / respond in seconds)
+   * interface (e.g. REST API / proposed methods)
+   * stakeholder (e.g. external accountant / internal software engineers / downstream dependencies)
+   * user / product (e.g. needs to be able to search by date range / sort by size, etc.)
 
-3. **Primary Interfaces**
+
+#### Solution Statement
+
+4. **Interfaces**
 
    * What interfaces will it expose? (REST, GRPC, Event, API, STDOUT, etc.)
    * Who/what will consume them?
 
-4. **Dependencies & Technologies**
+5. **Dependencies & Technologies**
 
    * What does it depend on?
-   * Any **new frameworks or libraries**?
+   * Any **new frameworks or libraries**? Any **removed dependencies?**
 
-5. **Technical Approach (High-Level)**
+6. **Technical Approach (High-Level)**
 
    * Tools, languages, and data flow (bullets).
    * Include a simple diagram if helpful.
 
-6. **Assumptions, Risks & Open Questions**
+7. **Justification of Technical Approach**
+
+   * Why have you used this approach?
+   * What considerations lead to this solution?
+
+8. **Assumptions, Risks & Open Questions**
 
    * Uncertainties (e.g., performance, upstream dependencies [I need that feature to be working in that other codebase before I start], security).
    * Assumptions that could break the design.
@@ -141,107 +153,71 @@ When reviewing, ask:
 
 ## 6. Examples
 
-### Example 1 – Logging Service
+### Example 1 – FLAIR's file based caching mechanism
 
-**Title & Summary**
-**"User Activity Logging Service"**
-We need a lightweight logging service to track user activity (login, API calls) for analytics and auditing. Must handle \~10k events/day, accessible via a simple query API.
+# Problem Statement
 
-**Relationships**
+## Summary
 
-* 1\:N relationship with User service (one user → many log events).
-* Consumed by Analytics service for reporting.
+Cache for REST API server, scripts should be run though external process (agent running on framework or forked bash process) and store data produced by each script in the cache.
 
-**Primary Interfaces**
+## Business Context
 
-* REST API:
+This is intended to be integrated with the agent framework when it is ready to be used, for the scripts in flair scripts to be run by an agent in the cloud by the agent framework and the output to be transferred somehow into an output location when the agent completes.
 
-  * `POST /logs` – record event
-  * `GET /logs?user_id` – retrieve events
-* Internal: writes to SQLite database.
+The intention is to use a similar framework with the agent framework in MAXAD and Neptune.
 
-**Dependencies & Technologies**
+## Requirements
 
-* SQLite (existing dependency).
-* Python FastAPI (already used elsewhere).
-* No new frameworks.
+- Be able to handle structured / semi-structured data, like that from an API.
+- Be able to handle variable data which doesn't adhere to a strict schema like that produced by an LLM
+- Be able to be easily written to by distributed agent running in the cloud 
+- Be able to handle missing data / no-data being returned, be able to handle agent encountering an error in execution, efficiently handle json data nativly without having to transform it
+- Be able to wok out path / route to data from script and inputs e.g. company number
 
-**Technical Approach**
+# Solution Statement
 
-* Small FastAPI microservice.
-* Writes logs to `logs.db` with a simple table (`user_id`, `timestamp`, `event_type`, `metadata`).
-* Simple index for fast retrieval by `user_id`.
+## Interfaces
 
-**Assumptions, Risks & Open Questions**
+The REST API should consume the data in the cache and return it to the client-side, if the data is not available in the cache, the API should trigger the script that produces the data to run and store the data in a predefined cache location.
 
-* Assumes SQLite can handle load (\~10k events/day).
-* No requirement yet for cross-service event streaming; may need upgrade later.
-* No security requirements beyond existing API token auth.
+## Dependencies & Technologies
 
----
+Removed Prisma (database manager) and SQL (database platform). 
 
-### Example 2 – Database Schema Change
+## Technical Approach
 
-**Title & Summary**
-**"Adding Order History Table to E-commerce DB"**
-We need to store historical orders for reporting and refunds. Current schema only stores active orders.
+Store script output as files in a directory filepath based on:
+- script being run
+- input arguments
 
-**Relationships**
+With the metadata about the request to run the script in a file with the .meta extension (just this file present means the script result is pending), the resultant json data in a .json extension file and any errors encountered returned in a .error extension file.
 
-* 1\:N relationship with `users` table.
-* Will be queried by Analytics and Refund services.
+e.g. for script at `company/financial_data/getFinancialData` which has input `{ company_number: 01234567}` we'd store the metadata at `output_cache/company/financial_data/getFinancialData/company_number_01234567.meta`, creating this when the script is called. When the data is produced it is saved at  `output_cache/company/financial_data/getFinancialData/company_number_01234567.json`, if an error is encountered the error is saved at `output_cache/company/financial_data/getFinancialData/company_number_01234567.error`.
 
-**Primary Interfaces**
+The code that handles the storing of the script output only needs to know the parent directory of the cache and can calculate the filepath to store the output at from just the script path and inputs.
 
-* SQL queries only (internal).
-* No direct API exposure.
+## Justification of technical approach
 
-**Dependencies & Technologies**
+Directory structure of `cache_dir/<scripts_path>/<Input_params>.ext` was chosen because:
 
-* Uses existing PostgreSQL instance.
-* No new dependencies.
+• Cache management is easier - When a script breaks or needs updates, you can invalidate/fix all outputs for that data type in one place, rather than hunting through hundreds of company folders
 
-**Technical Approach**
+• Development workflow is better - When debugging the financial data script, you want to see all financial outputs together to spot patterns and errors, not dig through individual company directories
 
-* New `order_history` table: (`order_id`, `user_id`, `product_id`, `status`, `created_at`).
-* Index on `user_id, created_at` for fast queries.
-* Archive completed orders nightly via batch job.
+• File system performance - Fewer directories with more files performs better than thousands of sparse company directories with just a few files each
 
-**Assumptions, Risks & Open Questions**
+• API structure alignment - Your cache structure mirrors your API endpoints (/api/company/financial-data → /company/financial_data/), making the codebase intuitive
 
-* Assumes nightly archiving job doesn’t significantly impact DB performance.
-* Refund service queries not yet fully defined.
+• Cross-company analysis is trivial - Operations like "find all companies missing financial data" or "update all confirmation statement formats" become simple directory scans instead of complex traversals
 
----
+• Ready for future agent framework - Each agent can own its cache directory cleanly, rather than needing to coordinate access to shared company directories
 
-### Example 3 – New External API Integration
+## Assumptions / Risks / Open Questions
 
-**Title & Summary**
-**"Integrating with Payment Gateway X"**
-We need to add support for Payment Gateway X to accept credit card payments.
-
-**Relationships**
-
-* New 1:1 integration with Payment Service.
-* Downstream impact on Order and Refund services.
-
-**Primary Interfaces**
-
-* External HTTPS REST API (Payment Gateway X).
-* Exposed internally via Payment Service REST API.
-
-**Dependencies & Technologies**
-
-* New dependency: Payment Gateway X SDK (Python).
-* Using existing async task runner for payment confirmation.
-
-**Technical Approach**
-
-* Extend Payment Service to include new `/payments/x` endpoint.
-* Webhook from Gateway X to confirm payment status.
-* Retry logic for failed payments.
-
-**Assumptions, Risks & Open Questions**
-
-* Gateway X SLA and failure modes unclear → need to validate retry policy.
-* Security review required for handling sensitive card tokens.
+- Assume we don't have to query, searching over multiple companies, or where we do need to we could do this using an existing third-party API, as searching over files in directories is slow
+- Assume if we want to query over multiple companies properties we can project the file system onto a database
+- Assume that we can achieve easy synchronising of the filesystem using yjs through the volt
+- Assume we will change the approach or develop a better solution if we need to scale to 100s or 1000s of users as we will hit performance issues.
+- Assume that we will be replacing forked bash processing with agents running in agent framework in the near future (few weeks or so)
+- Dependant on agent framework easily handing writing to files at shared file location
