@@ -129,8 +129,9 @@ Author drafts the design doc (≤20 min).
 
 ### Step 4 – Discuss
 
+* In github issues write your review of the design following the checklist below
 * Quick chat or short email thread (≤30 min).
-* If big issues arise, schedule a deeper session.
+* If as reviewer you have comments that could significantly change the design and require a bit more back-and-forth discussion then chat face-to-face with the designer and other reviewers either in the office or schedule a call. This is to avoid many messages going back and forth over a long time on github when there is contention - it is usually quicker to resolve with a discussion.
 
 ### Step 5 – Record
 
@@ -150,6 +151,7 @@ When reviewing, ask:
 6. **Future Flexibility** – Does the design allow reasonable future changes without huge refactors?
 7. **Justification** - Have the design decisions taken been justified with good reasons? Have any considerations been missed that mean the design might not be appropriate or are there any considerations which mean that another technical approach may be superior?
 8. **Risks & Assumptions** – Are key uncertainties identified?
+9. **Is it overcomplicated?** Reviewers should be looking out for over-engineering or overcomplicating things, it should have the capabilities to meet the requirements, but should not be too general purpose. It is necessary to balance the thinking about future expansion (i.e. thinking about generality) with focusing on the problem at hand. We want to avoid spending a lot of time developing capabilities that never actually get used.
 
 ---
 
